@@ -9,6 +9,7 @@ import javax.swing.JFrame;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
+
 @SuppressWarnings("serial")
 public class MainFrame extends JFrame {
     // Константы, задающие размер окна приложения, если оно
@@ -17,6 +18,7 @@ public class MainFrame extends JFrame {
     private static final int HEIGHT = 500;
     private JMenuItem pauseMenuItem;
     private JMenuItem resumeMenuItem;
+    private JMenuItem stopMenuItem;
     // Поле, по которому прыгают мячи
     private Field field = new Field();
     // Конструктор главного окна приложения
@@ -36,11 +38,10 @@ public class MainFrame extends JFrame {
         Action addBallAction = new AbstractAction("Добавить мяч") {
             public void actionPerformed(ActionEvent event) {
                 field.addBall();
-                if (!pauseMenuItem.isEnabled() &&
-                        !resumeMenuItem.isEnabled()) {
-// Ни один из пунктов меню не являются
-// доступными - сделать доступным "Паузу"
+                if (!pauseMenuItem.isEnabled() && !resumeMenuItem.isEnabled() && !stopMenuItem.isEnabled()) {
+// Ни один из пунктов меню не являются доступными - сделать доступным "Паузу"
                     pauseMenuItem.setEnabled(true);
+                    stopMenuItem.setEnabled(true);
                 }
             }
         };
@@ -53,6 +54,7 @@ public class MainFrame extends JFrame {
                 field.pause();
                 pauseMenuItem.setEnabled(false);
                 resumeMenuItem.setEnabled(true);
+                stopMenuItem.setEnabled(false);
             }
         };
         pauseMenuItem = controlMenu.add(pauseAction);
@@ -62,10 +64,21 @@ public class MainFrame extends JFrame {
                 field.resume();
                 pauseMenuItem.setEnabled(true);
                 resumeMenuItem.setEnabled(false);
+                stopMenuItem.setEnabled(false);
             }
         };
         resumeMenuItem = controlMenu.add(resumeAction);
         resumeMenuItem.setEnabled(false);
+        Action stopAction = new AbstractAction("Остановить 5 мячей") {
+            public void actionPerformed(ActionEvent event) {
+                field.pause5();
+                pauseMenuItem.setEnabled(false);
+                resumeMenuItem.setEnabled(true);
+                stopMenuItem.setEnabled(false);
+            }
+        };
+        stopMenuItem = controlMenu.add(stopAction);
+        stopMenuItem.setEnabled(false);
 // Добавить в центр граничной компоновки поле Field
         getContentPane().add(field, BorderLayout.CENTER);
     }

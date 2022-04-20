@@ -8,10 +8,13 @@ import java.awt.event.ActionListener;
 import java.util.ArrayList;
 import javax.swing.JPanel;
 import javax.swing.Timer;
+
 @SuppressWarnings("serial")
 public class Field extends JPanel {
     // Флаг приостановленности движения
     private boolean paused;
+    private boolean paused5;
+    private int count = 0;
     // Динамический список скачущих мячей
     private ArrayList<BouncingBall> balls = new ArrayList<BouncingBall>(10);
     // Класс таймер отвечает за регулярную генерацию событий ActionEvent
@@ -53,11 +56,17 @@ public class Field extends JPanel {
 // Включить режим паузы
         paused = true;
     }
+    public synchronized void pause5() {
+// Включить режим паузы
+        paused5 = true;
+    }
+
     // Метод синхронизированный, т.е. только один поток может
 // одновременно быть внутри
     public synchronized void resume() {
 // Выключить режим паузы
         paused = false;
+        paused5 = false;
 // Будим все ожидающие продолжения потоки
         notifyAll();
     }
@@ -70,5 +79,18 @@ public class Field extends JPanel {
 // внутрь данного метода, засыпает
             wait();
         }
+    }
+    public synchronized void canMove5(BouncingBall ball) throws InterruptedException {
+        if (count > 4) {
+            paused5 = false;
+            count = 0;
+        }
+        if (paused5) {
+// Если режим паузы включен, то поток, зашедший
+// внутрь данного метода, засыпает
+            count++;
+            wait();
+        }
+
     }
 }

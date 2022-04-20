@@ -1,7 +1,9 @@
 package com.company3;
+
 import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.geom.Ellipse2D;
+
 public class BouncingBall implements Runnable {
     // Максимальный радиус, который может иметь мяч
     private static final int MAX_RADIUS = 40;
@@ -64,6 +66,7 @@ public class BouncingBall implements Runnable {
 // возвращено в метод
 // В противном случае - активный поток заснѐт
                 field.canMove(this);
+                field.canMove5(this);
                 if (x + speedX <= radius) {
 // Достигли левой стенки, отскакиваем право
                     speedX = -speedX;
